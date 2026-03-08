@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-# Generate self-signed SSL certificate for local development
-# Covers localhost, 127.0.0.1, and your local network IP
+# Generate trusted SSL certificate using mkcert for local development
 #
 # Usage:
 #   bash scripts/gen-cert.sh                    # auto-detect local IP
@@ -10,6 +9,11 @@ set -e
 
 CERTS_DIR="$(dirname "$0")/../apps/web-app/certs"
 mkdir -p "$CERTS_DIR"
+
+if ! command -v mkcert &>/dev/null; then
+  echo "❌ mkcert not found. Install it: brew install mkcert && mkcert -install"
+  exit 1
+fi
 
 # Detect local IP if not provided
 if [ -n "$1" ]; then
@@ -23,18 +27,15 @@ if [ -z "$LOCAL_IP" ]; then
   exit 1
 fi
 
-echo "🔐 Generating certificate for: localhost, 127.0.0.1, $LOCAL_IP"
+echo "🔐 Generating trusted certificate for: localhost, 127.0.0.1, $LOCAL_IP"
 
-openssl req -x509 -newkey rsa:2048 -nodes \
-  -keyout "$CERTS_DIR/key.pem" \
-  -out "$CERTS_DIR/cert.pem" \
-  -days 365 \
-  -subj "/CN=localhost" \
-  -addext "subjectAltName=IP:127.0.0.1,IP:${LOCAL_IP},DNS:localhost"
+mkcert \
+  -key-file "$CERTS_DIR/key.pem" \
+  -cert-file "$CERTS_DIR/cert.pem" \
+  localhost 127.0.0.1 "$LOCAL_IP"
 
-echo "✅ Certificate saved to apps/web-app/certs/"
 echo ""
-echo "Next steps:"
-echo "  1. Trust the cert in your browser: open apps/web-app/certs/cert.pem"
-echo "  2. Run: pnpm --filter @devolution/web-app dev:https"
-echo "  3. In BotFather set URL: https://${LOCAL_IP}:3000"
+echo "✅ Done! Next steps:"
+echo "  1. Run: pnpm --filter @devolution/web-app dev:https"
+echo "  2. In BotFather set Mini App URL: https://${LOCAL_IP}:3000"
+echo "  3. Restart Telegram Desktop, then open your Mini App"
