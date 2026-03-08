@@ -8,11 +8,18 @@ export function Page({
   children,
   back = true,
 }: PropsWithChildren<{
+  /**
+   * Whether to show the Telegram native back button for this page.
+   * @default true
+   */
   back?: boolean;
 }>) {
   const router = useRouter();
 
   useEffect(() => {
+    // Guard: backButton may not be mounted outside Telegram env
+    if (!backButton.isMounted()) return;
+
     if (back) {
       backButton.show();
     } else {
@@ -21,6 +28,8 @@ export function Page({
   }, [back]);
 
   useEffect(() => {
+    if (!backButton.isMounted()) return;
+
     return backButton.onClick(() => {
       router.back();
     });
