@@ -4,17 +4,20 @@
   "private": true,
   "scripts": {
     "dev": "next dev --port 3000",
+    "dev:https": "next dev --experimental-https --port 3000",
     "build": "next build",
     "start": "next start --port 3000",
     "lint": "next lint",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@devolution/ui": "workspace:*",
     "@devolution/api-client": "workspace:*",
+    "@devolution/ui": "workspace:*",
+    "@tanstack/react-form": "^0.40.0",
     "@tanstack/react-query": "^5.63.0",
     "@tanstack/react-query-devtools": "^5.63.0",
-    "@tanstack/react-form": "^0.40.0",
+    "@telegram-apps/sdk-react": "^3.3.9",
+    "eruda": "^3.4.3",
     "next": "^15.1.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
