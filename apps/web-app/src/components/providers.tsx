@@ -5,8 +5,10 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { useState } from 'react';
 import { client } from '@devolution/api-client';
 
+// Use /api proxy path so all requests go through Next.js (avoids mixed content).
+// Next.js rewrites /api/:path* → http://localhost:3001/:path*
 client.setConfig({
-  baseUrl: process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001',
+  baseUrl: '/api',
 });
 
 export function Providers({ children }: { children: React.ReactNode }) {
